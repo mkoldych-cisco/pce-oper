@@ -5,18 +5,18 @@
 PCE Working Group                                           M. Koldychev
 Internet-Draft                                       Cisco Systems, Inc.
 Intended status: Standards Track                            S. Sivabalan
-Expires: February 27, 2021                             Ciena Corporation
+Expires: August 14, 2021                               Ciena Corporation
                                                                  M. Negi
                                                      Huawei Technologies
                                                               D. Achaval
                                                                    Nokia
                                                                 H. Kotni
                                                    Juniper Networks, Inc
-                                                         August 26, 2020
+                                                       February 10, 2021
 
 
                      PCEP Operational Clarification
-                   draft-koldychev-pce-operational-02
+                   draft-koldychev-pce-operational-03
 
 Abstract
 
@@ -53,16 +53,16 @@ Status of This Memo
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 1]
+Koldychev, et al.        Expires August 14, 2021                [Page 1]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
-   This Internet-Draft will expire on February 27, 2021.
+   This Internet-Draft will expire on August 14, 2021.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 2]
+Koldychev, et al.        Expires August 14, 2021                [Page 2]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    PCEP Extensions for the Stateful PCE Model [RFC8231] describes a set
@@ -165,9 +165,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 3]
+Koldychev, et al.        Expires August 14, 2021                [Page 3]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
       Source or Extended Association ID are included, then they MUST be
@@ -221,9 +221,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 4]
+Koldychev, et al.        Expires August 14, 2021                [Page 4]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    by the values in LSP-IDENTIFIERS TLV.  A single Tunnel may contain
@@ -277,9 +277,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 5]
+Koldychev, et al.        Expires August 14, 2021                [Page 5]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 3.3.  Stateful Bringup
@@ -333,9 +333,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 6]
+Koldychev, et al.        Expires August 14, 2021                [Page 6]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    PCC received a PCUpd from the PCE and has decided to install the
@@ -389,9 +389,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 7]
+Koldychev, et al.        Expires August 14, 2021                [Page 7]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
      +---------------------------------------------------------------+
@@ -445,9 +445,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 8]
+Koldychev, et al.        Expires August 14, 2021                [Page 8]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
      +---------------------------------------------------------------+
@@ -501,9 +501,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021               [Page 9]
+Koldychev, et al.        Expires August 14, 2021                [Page 9]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
      +---------------------------------------------------------------+
@@ -557,9 +557,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021              [Page 10]
+Koldychev, et al.        Expires August 14, 2021               [Page 10]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
      +---------------------------------------------------------------+
@@ -613,9 +613,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021              [Page 11]
+Koldychev, et al.        Expires August 14, 2021               [Page 11]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
      +---------------------------------------------------------------+
@@ -669,9 +669,9 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021              [Page 12]
+Koldychev, et al.        Expires August 14, 2021               [Page 12]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    [RFC8231]  Crabbe, E., Minei, I., Medved, J., and R. Varga, "Path
@@ -725,9 +725,9 @@ Authors' Addresses
 
 
 
-Koldychev, et al.       Expires February 27, 2021              [Page 13]
+Koldychev, et al.        Expires August 14, 2021               [Page 13]
 
-Internet-Draft             PCEP CLARIFICATION                August 2020
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    Mike Koldychev
@@ -781,4 +781,4 @@ Internet-Draft             PCEP CLARIFICATION                August 2020
 
 
 
-Koldychev, et al.       Expires February 27, 2021              [Page 14]
+Koldychev, et al.        Expires August 14, 2021               [Page 14]
