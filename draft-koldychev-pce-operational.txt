@@ -3,19 +3,20 @@
 
 
 PCE Working Group                                           M. Koldychev
-Internet-Draft                                              S. Sivabalan
-Intended status: Standards Track                     Cisco Systems, Inc.
-Expires: August 27, 2020                                         M. Negi
+Internet-Draft                                       Cisco Systems, Inc.
+Intended status: Standards Track                            S. Sivabalan
+Expires: February 27, 2021                             Ciena Corporation
+                                                                 M. Negi
                                                      Huawei Technologies
                                                               D. Achaval
                                                                    Nokia
                                                                 H. Kotni
                                                    Juniper Networks, Inc
-                                                       February 24, 2020
+                                                         August 26, 2020
 
 
                      PCEP Operational Clarification
-                   draft-koldychev-pce-operational-01
+                   draft-koldychev-pce-operational-02
 
 Abstract
 
@@ -49,14 +50,15 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 27, 2020.
 
 
 
-Koldychev, et al.        Expires August 27, 2020                [Page 1]
+Koldychev, et al.       Expires February 27, 2021               [Page 1]
 
-Internet-Draft             PCEP CLARIFICATION              February 2020
+Internet-Draft             PCEP CLARIFICATION                August 2020
 
+
+   This Internet-Draft will expire on February 27, 2021.
 
 Copyright Notice
 
@@ -80,13 +82,13 @@ Table of Contents
    3.  PCEP LSP Database . . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Structure . . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  Synchronization . . . . . . . . . . . . . . . . . . . . .   5
-     3.3.  Stateful Bringup  . . . . . . . . . . . . . . . . . . . .   5
+     3.3.  Stateful Bringup  . . . . . . . . . . . . . . . . . . . .   6
      3.4.  Successful MBB  . . . . . . . . . . . . . . . . . . . . .   7
      3.5.  Aborted MBB . . . . . . . . . . . . . . . . . . . . . . .   8
    4.  PCEP Association Database . . . . . . . . . . . . . . . . . .   9
      4.1.  2 LSPs in same Association  . . . . . . . . . . . . . . .   9
-     4.2.  Switch Association during MBB . . . . . . . . . . . . . .  10
-   5.  Computation Constraints . . . . . . . . . . . . . . . . . . .  11
+     4.2.  Switch Association during MBB . . . . . . . . . . . . . .  11
+   5.  Computation Constraints . . . . . . . . . . . . . . . . . . .  12
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
    8.  Acknowledgement . . . . . . . . . . . . . . . . . . . . . . .  12
@@ -103,17 +105,18 @@ Table of Contents
    (PCC) and a Path Control Element (PCE), or between two PCEs based on
    the PCE architecture [RFC4655].
 
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 2]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
    PCEP Extensions for the Stateful PCE Model [RFC8231] describes a set
    of extensions to PCEP to enable active control of Multiprotocol Label
    Switching Traffic Engineering (MPLS-TE) and Generalized MPLS (GMPLS)
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 2]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
-
    tunnels.  [RFC8281] describes the setup and teardown of PCE-initiated
    LSPs under the active stateful PCE model, without the need for local
    configuration on the PCC, thus allowing for dynamic centralized
@@ -159,16 +162,17 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
       of the mandatory fields Association type, Association ID and
       Association Source in the ASSOCIATION object uniquely identify the
       association group.  If the optional TLVs - Global Association
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 3]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
       Source or Extended Association ID are included, then they MUST be
       included in combination with mandatory fields to uniquely identify
       the association group.
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 3]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
    Association information:  As described in [RFC8697], the ASSOCIATION
       object could also include other optional TLVs based on the
@@ -214,17 +218,18 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    procedure.  We further clarify here that PCEP LSPs exist in a 2-tier
    structure.  The top tier is the "Tunnel", identified by the PLSP-ID
    and/or SYMBOLIC-NAME, while the lower tier is the "LSP", identified
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 4]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
    by the values in LSP-IDENTIFIERS TLV.  A single Tunnel may contain
    multiple LSPs at the same time, i.e., a Tunnel is a container for
    LSPs.  A Tunnel MUST have at least one LSP and when the last LSP is
    removed from the Tunnel, the Tunnel itself is removed.
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 4]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
 3.2.  Synchronization
 
@@ -267,20 +272,22 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    change.  When the PCE receives the PCRpt msg, it updates its own PCE
    LSP DB.  After this, the PCC LSP DB and PCE LSP DB are in sync.
 
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 5]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
 3.3.  Stateful Bringup
 
    [RFC8231] in section 5.8.2, allows delegation of an LSP in
    operationally down state, but at the same time mandates the use of
    PCReq, before sending PCRpt.  In this document, we would like to make
    it clear that sending PCReq is optional.
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 5]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
    We shall refer to the process of sending PCReq before PCRpt as
    "stateless bringup".  In reality, stateless bringup introduces
@@ -324,19 +331,16 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
 
                         Figure 1: Content of LSP DB
 
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 6]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
    PCC received a PCUpd from the PCE and has decided to install the
    ERO={A} from that PCUpd.  PCC sends PCRpt(R-FLAG=0, D-flag=1, OPER-
    FLAG=UP, PLSP-ID=100, LSP-ID=0, ERO={A}).
-
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 6]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
@@ -376,6 +380,20 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=3, ERO={B}, OPER-
    FLAG=UP).
 
+
+
+
+
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 7]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -384,15 +402,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
      +---------------------------------------------------------------+
 
                         Figure 4: Content of LSP DB
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 7]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
    After some time, the PCC decides to destroy the old LSP.  PCC sends
    PCRpt(R-FLAG=1, PLSP-ID=100, LSP-ID=2).
@@ -426,6 +435,21 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    is currently being established, so its oper state is DOWN.  PCC sends
    PCRpt(R-FLAG=0, OPER-FLAG=DOWN, PLSP-ID=100, LSP-ID=3).
 
+
+
+
+
+
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 8]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -437,18 +461,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
 
    MBB procedure is aborted.  PCC sends PCRpt(R-FLAG=1, PLSP-ID=100,
    LSP-ID=3).
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 8]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
@@ -487,6 +499,13 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    PCC creates the second LSP.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=200,
    LSP-ID=1, ASSO_PARAM=A, ASSO_R_FLAG=0).
 
+
+
+Koldychev, et al.       Expires February 27, 2021               [Page 9]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -498,14 +517,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
 
    PCC updates the first LSP, the PCC is NOT REQUIRED to send the
    ASSOCIATION object in this PCRpt, since the LSP is already in the
-
-
-
-Koldychev, et al.        Expires August 27, 2020                [Page 9]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
-
    Association.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1).  The
    content of the PCE ASSO DB is unchanged.  Note that the PCC MUST send
    the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if
@@ -537,6 +548,20 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    delete the LSP itself.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-
    ID=1, ASSO_PARAM=A, ASSO_R_FLAG=1).  The PCE ASSO DB is now empty.
 
+
+
+
+
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021              [Page 10]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -552,15 +577,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    This is done so that a Tunnel can have two LSPs that are in different
    Associations, this may be required when switching from one
    Association to another.
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020               [Page 10]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
    Below, we give an example a Tunnel going through MBB and switching
    from Association A to Association B.
@@ -592,6 +608,16 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    PCC deletes the old LSP.  PCC sends PCRpt(R-FLAG=1, PLSP-ID=100, LSP-
    ID=1).
 
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021              [Page 11]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -610,14 +636,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
    the previously specified affinity constraints do not apply anymore.
    Same applies to all PCEP objects, like METRIC, BANDWIDTH, etc., which
    do not have an explicit flag for removal.  This simply ensures that
-
-
-
-Koldychev, et al.        Expires August 27, 2020               [Page 11]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
-
    it is possible to remove a constraint without using an explicit
    removal flag.
 
@@ -649,6 +667,13 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
+
+
+Koldychev, et al.       Expires February 27, 2021              [Page 12]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
    [RFC8231]  Crabbe, E., Minei, I., Medved, J., and R. Varga, "Path
               Computation Element Communication Protocol (PCEP)
               Extensions for Stateful PCE", RFC 8231,
@@ -660,19 +685,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
               Extensions for PCE-Initiated LSP Setup in a Stateful PCE
               Model", RFC 8281, DOI 10.17487/RFC8281, December 2017,
               <https://www.rfc-editor.org/info/rfc8281>.
-
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020               [Page 12]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
-
 
    [RFC8697]  Minei, I., Crabbe, E., Sivabalan, S., Ananthakrishnan, H.,
               Dhody, D., and Y. Tanaka, "Path Computation Element
@@ -706,6 +718,18 @@ Appendix A.  Contributors
 
 Authors' Addresses
 
+
+
+
+
+
+
+
+Koldychev, et al.       Expires February 27, 2021              [Page 13]
+
+Internet-Draft             PCEP CLARIFICATION                August 2020
+
+
    Mike Koldychev
    Cisco Systems, Inc.
    2000 Innovation Drive
@@ -716,18 +740,12 @@ Authors' Addresses
 
 
    Siva Sivabalan
-   Cisco Systems, Inc.
-   2000 Innovation Drive
-   Kanata, Ontario  K2K 3E8
+   Ciena Corporation
+   385 Terry Fox Dr.
+   Kanata, Ontario  K2K 0L1
    Canada
 
-   Email: msiva@cisco.com
-
-
-
-Koldychev, et al.        Expires August 27, 2020               [Page 13]
-
-Internet-Draft             PCEP CLARIFICATION              February 2020
+   Email: ssivabal@ciena.com
 
 
    Mahendra Singh Negi
@@ -763,22 +781,4 @@ Internet-Draft             PCEP CLARIFICATION              February 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 27, 2020               [Page 14]
+Koldychev, et al.       Expires February 27, 2021              [Page 14]

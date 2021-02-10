@@ -36,7 +36,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-koldychev-pce-operational-00" ipr="trust200902">
+<rfc category="std" docName="draft-koldychev-pce-operational-02" ipr="trust200902">
 <!-- category values: std, bcp, info, exp, and historic
 ipr values: full3667, noModification3667, noDerivatives3667
 you can add the attributes updates="NNNN" and obsoletes="NNNN" 
@@ -63,16 +63,16 @@ they will automatically be output with "(if approved)" -->
     </author>
 
     <author fullname="Siva Sivabalan" initials="S." surname="Sivabalan">
-      <organization>Cisco Systems, Inc.</organization>
+      <organization>Ciena Corporation</organization>
       <address>
         <postal>
-          <street>2000 Innovation Drive</street>
+          <street>385 Terry Fox Dr.</street>
           <city>Kanata</city>
           <region>Ontario</region>
-          <code>K2K 3E8</code>
+          <code>K2K 0L1</code>
           <country>Canada</country>
         </postal>
-        <email>msiva@cisco.com</email>
+        <email>ssivabal@ciena.com</email>
       </address>
     </author>
 
@@ -97,7 +97,7 @@ they will automatically be output with "(if approved)" -->
       </address>
     </author>
 
-    <date day="02" month="July" year="2019" />
+    <date day="26" month="August" year="2020" />
 
     <workgroup>PCE Working Group</workgroup>
 
@@ -124,7 +124,7 @@ appear in all capitals, as shown here.</t>
 
 <t>PCEP Extensions for the Stateful PCE Model <xref target="RFC8231"/> describes a set of extensions to PCEP to enable active control of Multiprotocol Label Switching Traffic Engineering (MPLS-TE) and Generalized MPLS (GMPLS) tunnels.  <xref target="RFC8281"/> describes the setup and teardown of PCE-initiated LSPs under the active stateful PCE model, without the need for local configuration on the PCC, thus allowing for dynamic centralized control of a network.</t>
 
-<t>PCEP Extensions for Establishing Relationships Between Sets of LSPs <xref target="I-D.ietf-pce-association-group"/> introduces a generic mechanism to create a grouping of LSPs which can then be used to define associations between a set of LSPs and a set of attributes (such as configuration parameters or behaviors) and is equally applicable to stateful PCE (active and passive modes) and stateless PCE.</t>
+<t>PCEP Extensions for Establishing Relationships Between Sets of LSPs <xref target="RFC8697"/> introduces a generic mechanism to create a grouping of LSPs which can then be used to define associations between a set of LSPs and a set of attributes (such as configuration parameters or behaviors) and is equally applicable to stateful PCE (active and passive modes) and stateless PCE.</t>
 
 <t>The PCEP protocol has evolved from a simple stateless model into a stateful model with more features being added. Due to subtle differences in interpretation of existing PCEP standards, it was found that networking equipment vendors often had to adjust their implementations, in order to interoperate. This informational document is meant to clarify these subtle differences and agree on a final model that all major vendors have agreed on and that all other vendors can adopt. This document applies to RSVP-TE and Segment-Routing.</t>
 
@@ -144,9 +144,9 @@ appear in all capitals, as shown here.</t>
 
 <t hangText="MBB:"> Make-Before-Break. A procedure during which the head-end of a traffic-engineered path wishes to move traffic to a new path without losing any traffic, by first "making" a new path and then "breaking" the old path.</t>
 
-<t hangText="Association parameters:"> As described in <xref target="I-D.ietf-pce-association-group"/>, the combination of the mandatory fields Association type, Association ID and Association Source in the ASSOCIATION object uniquely identify the association group.  If the optional TLVs - Global Association Source or Extended Association ID are included, then they MUST be included in combination with mandatory fields to uniquely identify the association group.</t>
+<t hangText="Association parameters:"> As described in <xref target="RFC8697"/>, the combination of the mandatory fields Association type, Association ID and Association Source in the ASSOCIATION object uniquely identify the association group.  If the optional TLVs - Global Association Source or Extended Association ID are included, then they MUST be included in combination with mandatory fields to uniquely identify the association group.</t>
 
-<t hangText="Association information:"> As described in <xref target="I-D.ietf-pce-association-group"/>, the ASSOCIATION object could also include other optional TLVs based on the association types, that provides 'information' related to the association type.</t>
+<t hangText="Association information:"> As described in <xref target="RFC8697"/>, the ASSOCIATION object could also include other optional TLVs based on the association types, that provides 'information' related to the association type.</t>
 
 <t hangText="ERO:"> Explicit Route Object is the path of the LSP encoded into a PCEP object. To represent an empty ERO object, i.e., without any subobjects, we use the notation "ERO={}". To represent an ERO object containing some given sequence of subobjects, we use the notation "ERO={A}".</t>
 
@@ -360,7 +360,7 @@ appear in all capitals, as shown here.</t>
 
 <t>PCC updates the first LSP, the PCC is NOT REQUIRED to send the ASSOCIATION object in this PCRpt, 
 since the LSP is already in the Association. PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1). The 
-content of the PCE ASSO DB is unchanged. Note that the PCC MUST send the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if it has already issued a PCRpt with the association object sometime in the past with this PCE. The synchronization steps outlined in <xref target="I-D.ietf-pce-association-group"/> are to be followed.</t>
+content of the PCE ASSO DB is unchanged. Note that the PCC MUST send the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if it has already issued a PCRpt with the association object sometime in the past with this PCE. The synchronization steps outlined in <xref target="RFC8697"/> are to be followed.</t>
 <t>
 <figure anchor="ASSO_DB_2TUN_1ASSO_CONTENT_3" title="Content of PCE ASSO DB">
 <artwork align="left"><![CDATA[
@@ -458,6 +458,27 @@ The PCE ASSO DB is now empty.</t>
 </section> <!-- ASSO_DB  -->
 
 
+<section anchor="COMP_CONST" title="Computation Constraints">
+
+<t>For any PCEP object that does not have an explicit removal flag, the absence of that object indicates removal of the constraint specified by that object. For example, suppose the first state-report contains an LSPA object with some affinity constraints. Then if a subsequent state-report does not contain an LSPA object, then this means that the previously specified affinity constraints do not apply anymore. Same applies to all PCEP objects, like METRIC, BANDWIDTH, etc., which do not have an explicit flag for removal. This simply ensures that it is possible to remove a constraint without using an explicit removal flag.</t>
+
+</section> <!-- COMP_CONST  -->
+
+
+<section anchor="SECURITY" title="Security Considerations">
+
+<t>None at this time.</t>
+
+</section> <!-- SECURITY  -->
+
+
+<section anchor="IANA" title="IANA Considerations">
+
+<t>None at this time.</t>
+
+</section> <!-- IANA  -->
+
+
 <section anchor="Acknowledgement" title="Acknowledgement">
 </section> <!-- Acknowledgement -->
 
@@ -471,7 +492,7 @@ The PCE ASSO DB is now empty.</t>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8231.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8281.xml"?>
-  <?rfc include="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-pce-association-group"?>
+  <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8697.xml"?>
      
 </references>
 <references title="Informative References">
