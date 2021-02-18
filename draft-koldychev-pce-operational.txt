@@ -89,14 +89,15 @@ Table of Contents
      4.1.  2 LSPs in same Association  . . . . . . . . . . . . . . .   9
      4.2.  Switch Association during MBB . . . . . . . . . . . . . .  11
    5.  Computation Constraints . . . . . . . . . . . . . . . . . . .  12
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
-   8.  Acknowledgement . . . . . . . . . . . . . . . . . . . . . . .  12
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  12
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Contributors . . . . . . . . . . . . . . . . . . . .  13
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
+   6.  Use of RRO and SR-RRO objects . . . . . . . . . . . . . . . .  12
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   9.  Acknowledgement . . . . . . . . . . . . . . . . . . . . . . .  13
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .  13
+     10.2.  Informative References . . . . . . . . . . . . . . . . .  14
+   Appendix A.  Contributors . . . . . . . . . . . . . . . . . . . .  14
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
@@ -104,7 +105,6 @@ Table of Contents
    [RFC5440] enables the communication between a Path Computation Client
    (PCC) and a Path Control Element (PCE), or between two PCEs based on
    the PCE architecture [RFC4655].
-
 
 
 
@@ -639,19 +639,50 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
    it is possible to remove a constraint without using an explicit
    removal flag.
 
-6.  Security Considerations
+6.  Use of RRO and SR-RRO objects
+
+   [RFC8231] defines a PCRpt message which contains <intended-path>
+   known as the ERO Object and <actual-path> known as the RRO object.
+   [RFC8664] extends ERO and RRO support for SR-TE LSPs.  In practice
+   RRO data set is the result of signalling of the intended path defined
+   in the ERO via protocol such as RSVP.  The ERO and RRO values may be
+   different as the path encoded in the ERO may differ than the RRO such
+   as during protection conditions or if the ERO contains loose hops
+   which are expanded upon.  As Segment Routing LSP does not perform any
+   signalling, the values of an ERO and RRO are in practice the same,
+   therefore some implementations have omitted the RRO when reporting a
+   SR-TE LSP while others continue to send both ERO and RRO values.
+
+   A PCC MUST send an ERO for a path which is operationally up.  A PCC
+   MAY send an RRO for an SR-TE LSP.  A PCE SHOULD interpret the RRO as
+   the actual path the LSP is taking but MAY interpret only the ERO as
+   the actual path.  In the absence of an RRO a PCE SHOULD interpret the
+   ERO as the actual path for the LSP.
+
+7.  Security Considerations
 
    None at this time.
 
-7.  IANA Considerations
+
+
+
+
+
+
+Koldychev, et al.        Expires August 14, 2021               [Page 12]
+
+Internet-Draft             PCEP CLARIFICATION              February 2021
+
+
+8.  IANA Considerations
 
    None at this time.
 
-8.  Acknowledgement
+9.  Acknowledgement
 
-9.  References
+10.  References
 
-9.1.  Normative References
+10.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -667,13 +698,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-
-
-Koldychev, et al.        Expires August 14, 2021               [Page 12]
-
-Internet-Draft             PCEP CLARIFICATION              February 2021
-
-
    [RFC8231]  Crabbe, E., Minei, I., Medved, J., and R. Varga, "Path
               Computation Element Communication Protocol (PCEP)
               Extensions for Stateful PCE", RFC 8231,
@@ -686,6 +710,12 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
               Model", RFC 8281, DOI 10.17487/RFC8281, December 2017,
               <https://www.rfc-editor.org/info/rfc8281>.
 
+   [RFC8664]  Sivabalan, S., Filsfils, C., Tantsura, J., Henderickx, W.,
+              and J. Hardwick, "Path Computation Element Communication
+              Protocol (PCEP) Extensions for Segment Routing", RFC 8664,
+              DOI 10.17487/RFC8664, December 2019,
+              <https://www.rfc-editor.org/info/rfc8664>.
+
    [RFC8697]  Minei, I., Crabbe, E., Sivabalan, S., Ananthakrishnan, H.,
               Dhody, D., and Y. Tanaka, "Path Computation Element
               Communication Protocol (PCEP) Extensions for Establishing
@@ -693,7 +723,14 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
               (LSPs)", RFC 8697, DOI 10.17487/RFC8697, January 2020,
               <https://www.rfc-editor.org/info/rfc8697>.
 
-9.2.  Informative References
+
+
+Koldychev, et al.        Expires August 14, 2021               [Page 13]
+
+Internet-Draft             PCEP CLARIFICATION              February 2021
+
+
+10.2.  Informative References
 
    [RFC4655]  Farrel, A., Vasseur, J., and J. Ash, "A Path Computation
               Element (PCE)-Based Architecture", RFC 4655,
@@ -718,18 +755,6 @@ Appendix A.  Contributors
 
 Authors' Addresses
 
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 14, 2021               [Page 13]
-
-Internet-Draft             PCEP CLARIFICATION              February 2021
-
-
    Mike Koldychev
    Cisco Systems, Inc.
    2000 Innovation Drive
@@ -752,6 +777,13 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
    Huawei Technologies
 
    Email: mahendrasingh@huawei.com
+
+
+
+
+Koldychev, et al.        Expires August 14, 2021               [Page 14]
+
+Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
    Diego Achaval
@@ -781,4 +813,28 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 14, 2021               [Page 14]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Koldychev, et al.        Expires August 14, 2021               [Page 15]
