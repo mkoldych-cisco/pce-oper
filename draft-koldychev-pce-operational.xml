@@ -76,10 +76,16 @@ they will automatically be output with "(if approved)" -->
       </address>
     </author>
 
-    <author fullname="Mahendra Singh Negi" initials="M." surname="Negi">
+    <author fullname="Shuping Peng" initials="S." surname="Peng">
       <organization>Huawei Technologies</organization>
-      <address>
-        <email>mahendrasingh@huawei.com</email>
+       <address>
+        <postal>
+          <street>Huawei Campus, No. 156 Beiqing Rd.</street>
+           <city>Beijing</city>
+           <code>100095</code>
+           <country>China</country>
+        </postal>
+         <email>pengshuping@huawei.com</email>
       </address>
     </author>
 
@@ -529,6 +535,16 @@ Ottawa, Canada
 Email: andrew.stone@nokia.com
 </artwork></figure></t> 
  
+<t><figure><artwork>
+Mahendra Singh Negi
+RtBrick Inc
+N-17L, 18th Cross Rd, HSR Layout
+Bangalore, Karnataka  560102
+India
+
+Email: mahend.ietf@gmail.com
+</artwork></figure></t> 
+
 </section> <!-- Contributors -->
 
 </back>

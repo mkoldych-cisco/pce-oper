@@ -5,14 +5,14 @@
 PCE Working Group                                           M. Koldychev
 Internet-Draft                                       Cisco Systems, Inc.
 Intended status: Standards Track                            S. Sivabalan
-Expires: August 22, 2021                               Ciena Corporation
-                                                                 M. Negi
+Expires: August 23, 2021                               Ciena Corporation
+                                                                 S. Peng
                                                      Huawei Technologies
                                                               D. Achaval
                                                                    Nokia
                                                                 H. Kotni
                                                    Juniper Networks, Inc
-                                                       February 18, 2021
+                                                       February 19, 2021
 
 
                      PCEP Operational Clarification
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 1]
+Koldychev, et al.        Expires August 23, 2021                [Page 1]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
-   This Internet-Draft will expire on August 22, 2021.
+   This Internet-Draft will expire on August 23, 2021.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 2]
+Koldychev, et al.        Expires August 23, 2021                [Page 2]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -165,7 +165,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 3]
+Koldychev, et al.        Expires August 23, 2021                [Page 3]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -221,7 +221,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 4]
+Koldychev, et al.        Expires August 23, 2021                [Page 4]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -277,7 +277,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 5]
+Koldychev, et al.        Expires August 23, 2021                [Page 5]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -333,7 +333,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 6]
+Koldychev, et al.        Expires August 23, 2021                [Page 6]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -389,7 +389,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 7]
+Koldychev, et al.        Expires August 23, 2021                [Page 7]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -445,7 +445,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 8]
+Koldychev, et al.        Expires August 23, 2021                [Page 8]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -501,7 +501,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021                [Page 9]
+Koldychev, et al.        Expires August 23, 2021                [Page 9]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -557,7 +557,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021               [Page 10]
+Koldychev, et al.        Expires August 23, 2021               [Page 10]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -613,7 +613,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021               [Page 11]
+Koldychev, et al.        Expires August 23, 2021               [Page 11]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -669,7 +669,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021               [Page 12]
+Koldychev, et al.        Expires August 23, 2021               [Page 12]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -725,7 +725,7 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-Koldychev, et al.        Expires August 22, 2021               [Page 13]
+Koldychev, et al.        Expires August 23, 2021               [Page 13]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
@@ -753,6 +753,14 @@ Appendix A.  Contributors
 
    Email: andrew.stone@nokia.com
 
+   Mahendra Singh Negi
+   RtBrick Inc
+   N-17L, 18th Cross Rd, HSR Layout
+   Bangalore, Karnataka  560102
+   India
+
+   Email: mahend.ietf@gmail.com
+
 Authors' Addresses
 
    Mike Koldychev
@@ -764,6 +772,20 @@ Authors' Addresses
    Email: mkoldych@cisco.com
 
 
+
+
+
+
+
+
+
+
+
+Koldychev, et al.        Expires August 23, 2021               [Page 14]
+
+Internet-Draft             PCEP CLARIFICATION              February 2021
+
+
    Siva Sivabalan
    Ciena Corporation
    385 Terry Fox Dr.
@@ -773,17 +795,13 @@ Authors' Addresses
    Email: ssivabal@ciena.com
 
 
-   Mahendra Singh Negi
+   Shuping Peng
    Huawei Technologies
+   Huawei Campus, No. 156 Beiqing Rd.
+   Beijing  100095
+   China
 
-   Email: mahendrasingh@huawei.com
-
-
-
-
-Koldychev, et al.        Expires August 22, 2021               [Page 14]
-
-Internet-Draft             PCEP CLARIFICATION              February 2021
+   Email: pengshuping@huawei.com
 
 
    Diego Achaval
@@ -819,22 +837,4 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 22, 2021               [Page 15]
+Koldychev, et al.        Expires August 23, 2021               [Page 15]
