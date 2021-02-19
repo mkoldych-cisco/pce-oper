@@ -89,15 +89,15 @@ Table of Contents
      4.1.  2 LSPs in same Association  . . . . . . . . . . . . . . .   9
      4.2.  Switch Association during MBB . . . . . . . . . . . . . .  11
    5.  Computation Constraints . . . . . . . . . . . . . . . . . . .  12
-   6.  Use of RRO and SR-RRO objects . . . . . . . . . . . . . . . .  12
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   6.  Use of RRO, SR-RRO and SRv6-RRO objects . . . . . . . . . . .  12
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
    9.  Acknowledgement . . . . . . . . . . . . . . . . . . . . . . .  13
    10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
      10.1.  Normative References . . . . . . . . . . . . . . . . . .  13
      10.2.  Informative References . . . . . . . . . . . . . . . . .  14
    Appendix A.  Contributors . . . . . . . . . . . . . . . . . . . .  14
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
 
@@ -639,32 +639,32 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
    it is possible to remove a constraint without using an explicit
    removal flag.
 
-6.  Use of RRO and SR-RRO objects
+6.  Use of RRO, SR-RRO and SRv6-RRO objects
 
    [RFC8231] defines a PCRpt message which contains <intended-path>
-   known as the ERO Object and <actual-path> known as the RRO object.
-   [RFC8664] extends ERO and RRO support for SR-TE LSPs.  In practice
-   RRO data set is the result of signalling of the intended path defined
-   in the ERO via protocol such as RSVP.  The ERO and RRO values may be
-   different as the path encoded in the ERO may differ than the RRO such
-   as during protection conditions or if the ERO contains loose hops
-   which are expanded upon.  As Segment Routing LSP does not perform any
-   signalling, the values of an ERO and RRO are in practice the same,
-   therefore some implementations have omitted the RRO when reporting a
-   SR-TE LSP while others continue to send both ERO and RRO values.
+   known as the ERO object and <actual-path> known as the RRO object.
+   [RFC8664] defines SR-ERO and SR-RRO objects for SR-TE LSPs.
+   [I-D.ietf-pce-segment-routing-ipv6] further defines SRv6-ERO and
+   SRv6-RRO objects for SRv6-TE paths.
 
-   A PCC MUST send an ERO for a path which is operationally up.  A PCC
-   MAY send an RRO for an SR-TE LSP.  A PCE SHOULD interpret the RRO as
-   the actual path the LSP is taking but MAY interpret only the ERO as
-   the actual path.  In the absence of an RRO a PCE SHOULD interpret the
-   ERO as the actual path for the LSP.
+   In practice RRO data set is the result of signalling of the intended
+   path defined in the ERO via protocol such as RSVP.  The ERO and RRO
+   values may be different as the path encoded in the ERO may differ
+   than the RRO such as during protection conditions or if the ERO
+   contains loose hops which are expanded upon.  As Segment Routing LSP
+   does not perform any signalling, the values of an SR-ERO/SRv6-ERO and
+   SR-RRO/SRv6-RRO (respectively) are in practice the same, therefore
+   some implementations have omitted the SR-RRO/SRv6-RRO when reporting
+   a SR-TE LSP while others continue to send both SR-ERO/SRv6-ERO and
+   SR-RRO/SRv6-RRO values.
 
-7.  Security Considerations
-
-   None at this time.
-
-
-
+   A PCC MUST send an (possibly empty) ERO/SR-ERO/SRv6-ERO in the PCRpt
+   message for every LSP.  A PCC MAY send an SR-RRO/SRv6-RRO for an SR-
+   TE/SRv6-TE LSP (respectively).  A PCE SHOULD interpret the RRO/SR-
+   RRO/SRv6-RRO as the actual path the LSP is taking but MAY interpret
+   only the ERO/SR-ERO/SRv6-ERO as the actual path.  In the absence of
+   an RRO/SR-RRO/SRv6-RRO a PCE SHOULD interpret the ERO/SR-ERO/SRv6-ERO
+   (respectively) as the actual path for the LSP.
 
 
 
@@ -673,6 +673,10 @@ Koldychev, et al.        Expires August 23, 2021               [Page 12]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
+
+7.  Security Considerations
+
+   None at this time.
 
 8.  IANA Considerations
 
@@ -716,12 +720,8 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
               DOI 10.17487/RFC8664, December 2019,
               <https://www.rfc-editor.org/info/rfc8664>.
 
-   [RFC8697]  Minei, I., Crabbe, E., Sivabalan, S., Ananthakrishnan, H.,
-              Dhody, D., and Y. Tanaka, "Path Computation Element
-              Communication Protocol (PCEP) Extensions for Establishing
-              Relationships between Sets of Label Switched Paths
-              (LSPs)", RFC 8697, DOI 10.17487/RFC8697, January 2020,
-              <https://www.rfc-editor.org/info/rfc8697>.
+
+
 
 
 
@@ -729,6 +729,19 @@ Koldychev, et al.        Expires August 23, 2021               [Page 13]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
 
+
+   [RFC8697]  Minei, I., Crabbe, E., Sivabalan, S., Ananthakrishnan, H.,
+              Dhody, D., and Y. Tanaka, "Path Computation Element
+              Communication Protocol (PCEP) Extensions for Establishing
+              Relationships between Sets of Label Switched Paths
+              (LSPs)", RFC 8697, DOI 10.17487/RFC8697, January 2020,
+              <https://www.rfc-editor.org/info/rfc8697>.
+
+   [I-D.ietf-pce-segment-routing-ipv6]
+              Li, C., Negi, M., Sivabalan, S., Koldychev, M.,
+              Kaladharan, P., and Y. Zhu, "PCEP Extensions for Segment
+              Routing leveraging the IPv6 data plane", draft-ietf-pce-
+              segment-routing-ipv6-08 (work in progress), November 2020.
 
 10.2.  Informative References
 
@@ -761,19 +774,6 @@ Appendix A.  Contributors
 
    Email: mahend.ietf@gmail.com
 
-Authors' Addresses
-
-   Mike Koldychev
-   Cisco Systems, Inc.
-   2000 Innovation Drive
-   Kanata, Ontario  K2K 3E8
-   Canada
-
-   Email: mkoldych@cisco.com
-
-
-
-
 
 
 
@@ -784,6 +784,17 @@ Authors' Addresses
 Koldychev, et al.        Expires August 23, 2021               [Page 14]
 
 Internet-Draft             PCEP CLARIFICATION              February 2021
+
+
+Authors' Addresses
+
+   Mike Koldychev
+   Cisco Systems, Inc.
+   2000 Innovation Drive
+   Kanata, Ontario  K2K 3E8
+   Canada
+
+   Email: mkoldych@cisco.com
 
 
    Siva Sivabalan
@@ -814,17 +825,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2021
    Juniper Networks, Inc
 
    Email: hkotni@juniper.net
-
-
-
-
-
-
-
-
-
-
-
 
 
 

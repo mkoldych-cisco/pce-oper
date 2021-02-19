@@ -471,11 +471,13 @@ The PCE ASSO DB is now empty.</t>
 </section> <!-- COMP_CONST  -->
 
 
-<section anchor="RRO" title="Use of RRO and SR-RRO objects">
+<section anchor="RRO" title="Use of RRO, SR-RRO and SRv6-RRO objects">
 
-<t><xref target="RFC8231"/> defines a PCRpt message which contains &#60;intended-path&#62; known as the ERO Object and &#60;actual-path&#62; known as the RRO object. <xref target="RFC8664"/> extends ERO and RRO support for SR-TE LSPs. In practice RRO data set is the result of signalling of the intended path defined in the ERO via protocol such as RSVP. The ERO and RRO values may be different as the path encoded in the ERO may differ than the RRO such as during protection conditions or if the ERO contains loose hops which are expanded upon. As Segment Routing LSP does not perform any signalling, the values of an ERO and RRO are in practice the same, therefore some implementations have omitted the RRO when reporting a SR-TE LSP while others continue to send both ERO and RRO values.</t>
+<t><xref target="RFC8231"/> defines a PCRpt message which contains &#60;intended-path&#62; known as the ERO object and &#60;actual-path&#62; known as the RRO object. <xref target="RFC8664"/> defines SR-ERO and SR-RRO objects for SR-TE LSPs. <xref target="I-D.ietf-pce-segment-routing-ipv6"/> further defines SRv6-ERO and SRv6-RRO objects for SRv6-TE paths.</t>
+
+<t>In practice RRO data set is the result of signalling of the intended path defined in the ERO via protocol such as RSVP. The ERO and RRO values may be different as the path encoded in the ERO may differ than the RRO such as during protection conditions or if the ERO contains loose hops which are expanded upon. As Segment Routing LSP does not perform any signalling, the values of an SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO (respectively) are in practice the same, therefore some implementations have omitted the SR-RRO/SRv6-RRO when reporting a SR-TE LSP while others continue to send both SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO values.</t>
  
-<t>A PCC MUST send an ERO for a path which is operationally up. A PCC MAY send an RRO for an SR-TE LSP. A PCE SHOULD interpret the RRO as the actual path the LSP is taking but MAY interpret only the ERO as the actual path. In the absence of an RRO a PCE SHOULD interpret the ERO as the actual path for the LSP.</t>
+<t>A PCC MUST send an (possibly empty) ERO/SR-ERO/SRv6-ERO in the PCRpt message for every LSP. A PCC MAY send an SR-RRO/SRv6-RRO for an SR-TE/SRv6-TE LSP (respectively). A PCE SHOULD interpret the RRO/SR-RRO/SRv6-RRO as the actual path the LSP is taking but MAY interpret only the ERO/SR-ERO/SRv6-ERO as the actual path. In the absence of an RRO/SR-RRO/SRv6-RRO a PCE SHOULD interpret the ERO/SR-ERO/SRv6-ERO (respectively) as the actual path for the LSP.</t>
 
 </section> <!-- RRO -->
 
@@ -509,7 +511,7 @@ The PCE ASSO DB is now empty.</t>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8281.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8664.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8697.xml"?>
-     
+  <?rfc include="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-pce-segment-routing-ipv6"?>
 </references>
 <references title="Informative References">
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4655.xml"?>
