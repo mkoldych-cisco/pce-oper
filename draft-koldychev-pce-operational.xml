@@ -36,7 +36,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-koldychev-pce-operational-03" ipr="trust200902">
+<rfc category="std" docName="draft-koldychev-pce-operational-04" ipr="trust200902">
 <!-- category values: std, bcp, info, exp, and historic
 ipr values: full3667, noModification3667, noDerivatives3667
 you can add the attributes updates="NNNN" and obsoletes="NNNN" 
@@ -103,13 +103,13 @@ they will automatically be output with "(if approved)" -->
       </address>
     </author>
 
-    <date month="February" year="2021" />
+    <date month="August" year="2021" />
 
     <workgroup>PCE Working Group</workgroup>
 
 <abstract>
 
-<t>This document is meant to provide better clarity about how PCEP operates and hence to facilitate better interoperability between different equipment vendors. The content of this document has been compiled based on the feedback from several multi-vendor interop exercises. Several constructs are introduced to facilitate this, such as the LSP-DB and the ASSO-DB.</t>
+<t>This document provides clarity about how PCEP operates and hence to facilitates interoperability between different equipment vendors. The content of this document has been compiled based on the feedback from several multi-vendor interop exercises. Several constructs are introduced, such as the LSP-DB and the ASSO-DB.</t>
 
 </abstract> 
 
@@ -182,7 +182,7 @@ appear in all capitals, as shown here.</t>
 
 <t>The PCC adds/removes entries to/from its LSP-DB based on what LSPs it creates/destroys in the network. There can be many trigger types for updating the PCC LSP-DB, some examples include PCUpd messages, local computation on the PCC, local configuration on the PCC, etc. The trigger type does not affect the content of the PCC LSP-DB, i.e., the content of the PCC LSP-DB is updated identically regardless of the trigger type.</t>
 
-<t>Whenever a PCC modifies an entry it its PCC LSP-DB, it MUST send a PCRpt message to the PCE (or multiple PCEs), to synchronize this change. Ensuring this synchronization is always in place allows one to define behavior as a function of LSP-DB state, instead of defining behavior as a function of what PCEP messages were sent or received.</t>
+<t>Whenever a PCC modifies an entry in its PCC LSP-DB, it MUST send a PCRpt message to the PCE (or multiple PCEs), to synchronize this change. Ensuring this synchronization is always in place allows one to define behavior as a function of LSP-DB state, instead of defining behavior as a function of what PCEP messages were sent or received.</t>
 
 <t>The PCE MUST always act on the latest state of the PCE LSP DB. Note that this does not mean that the PCE cannot use information from outside of LSP-DB. For example, the PCE can use other mechanisms to collect traffic statistics and use them in the computation. However, these traffic statistics are not part of the LSP-DB, but only reference it.</t>
 
@@ -231,7 +231,7 @@ appear in all capitals, as shown here.</t>
 
 <section anchor="LSP_DB_MBB" title="Successful MBB">
 
-<t>Below we give an example of doing MBB to switch the tunnel from one path to another. We represent the path encoded into the ERO object as ERO={A} and ERO={B}.</t>
+<t>Below we give an example of doing MBB to switch the Tunnel from one path to another. We represent the path encoded into the ERO object as ERO={A} and ERO={B}.</t>
 
 <t>PCC has an existing LSP in UP state, with LSP-ID=2. PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=2, ERO={A}, OPER-FLAG=UP).</t>
 <t><figure anchor="LSP_DB_CONTENT_MBB_1" title="Content of LSP DB">
@@ -245,7 +245,7 @@ appear in all capitals, as shown here.</t>
 </figure>
 </t>
 
-<t>PCC initiates the MBB procedure by creating a new LSP with LSP-ID=3. It does not matter what triggered the creation of the new LSP, it could have been due to a new path received via PCUpd (if the given tunnel is delegated), or it could have been local computation on the PCC (if the tunnel is locally computed on the PCC), or it could have been a change in configuration on the PCC (if the tunnel's path is explicitly configured on the PCC). It is important to emphasize that the procedure for updating the LSP-DB is common, regardless of the trigger that caused the change.</t>
+<t>PCC initiates the MBB procedure by creating a new LSP with LSP-ID=3. It does not matter what triggered the creation of the new LSP, it could have been due to a new path received via PCUpd (if the given Tunnel is delegated), or it could have been local computation on the PCC (if the Tunnel is locally computed on the PCC), or it could have been a change in configuration on the PCC (if the Tunnel's path is explicitly configured on the PCC). It is important to emphasize that the procedure for updating the LSP-DB is common, regardless of the trigger that caused the change.</t>
 <t>PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=3, ERO={B}, OPER-FLAG=UP).</t>
 <t>
 <figure anchor="LSP_DB_CONTENT_MBB_2" title="Content of LSP DB">
@@ -260,7 +260,7 @@ appear in all capitals, as shown here.</t>
 </figure>
 </t>
 
-<t>After some time, the PCC decides to destroy the old LSP. PCC sends PCRpt(R-FLAG=1, PLSP-ID=100, LSP-ID=2).</t>
+<t>After traffic has successfully switched to the new LSP, the PCC cleans up the old LSP. PCC sends PCRpt(R-FLAG=1, PLSP-ID=100, LSP-ID=2).</t>
 <t>
 <figure anchor="LSP_DB_CONTENT_MBB_4" title="Content of LSP DB">
 <artwork align="left"><![CDATA[
