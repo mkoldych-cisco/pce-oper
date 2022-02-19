@@ -36,7 +36,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-koldychev-pce-operational-04" ipr="trust200902">
+<rfc category="std" docName="draft-koldychev-pce-operational-05" ipr="trust200902">
 <!-- category values: std, bcp, info, exp, and historic
 ipr values: full3667, noModification3667, noDerivatives3667
 you can add the attributes updates="NNNN" and obsoletes="NNNN" 
@@ -103,14 +103,16 @@ they will automatically be output with "(if approved)" -->
       </address>
     </author>
 
-    <date month="August" year="2021" />
+    <date month="February" year="2022" />
 
     <workgroup>PCE Working Group</workgroup>
 
 <abstract>
-
-<t>This document provides clarity about how PCEP operates and hence to facilitates interoperability between different equipment vendors. The content of this document has been compiled based on the feedback from several multi-vendor interop exercises. Several constructs are introduced, such as the LSP-DB and the ASSO-DB.</t>
-
+<t>
+This document proposes some important simplifications to the original PCEP protocol and also serves to clarify certain aspects of PCEP operation.
+The content of this document has been compiled based on the feedback from several multi-vendor interop exercises.
+Several constructs are introduced, such as the LSP-DB and the ASSO-DB.
+</t>
 </abstract> 
 
 <note title="Requirements Language">
@@ -126,13 +128,21 @@ appear in all capitals, as shown here.</t>
 
 <section anchor="Introduction" title="Introduction">
 
-<t>Path Computation Element (PCE) Communication Protocol (PCEP) <xref target="RFC5440"/> enables the communication between a Path Computation Client (PCC) and a Path Control Element (PCE), or between two PCEs based on the PCE architecture <xref target="RFC4655"/>.</t>
+<t>
+The PCEP protocol started off being purely stateless with PCReq and PCReply messages, as described in Path Computation Element (PCE) Communication Protocol (PCEP) <xref target="RFC5440"/>.
+Stateless PCEP operates in a "pull" model, i.e., PCC has to periodically ask the PCE for updates to the path, even if the path has not changed.
+</t>
 
-<t>PCEP Extensions for the Stateful PCE Model <xref target="RFC8231"/> describes a set of extensions to PCEP to enable active control of Multiprotocol Label Switching Traffic Engineering (MPLS-TE) and Generalized MPLS (GMPLS) tunnels.  <xref target="RFC8281"/> describes the setup and teardown of PCE-initiated LSPs under the active stateful PCE model, without the need for local configuration on the PCC, thus allowing for dynamic centralized control of a network.</t>
+<t>
+Stateful PCEP was later introduced in PCEP Extensions for the Stateful PCE Model <xref target="RFC8231"/>.
+Stateful PCEP operates in a "push" model, where the PCC can register with PCE to receive future updates about the path, and there is no need to ask the PCE periodically.
+The current document serves to optimize the original procedure in <xref target="RFC8231"/> to drop the PCReq and PCReply exchange, which greatly simplifies implementation and optimizes the protocol.
+</t>
 
-<t>PCEP Extensions for Establishing Relationships Between Sets of LSPs <xref target="RFC8697"/> introduces a generic mechanism to create a grouping of LSPs which can then be used to define associations between a set of LSPs and a set of attributes (such as configuration parameters or behaviors) and is equally applicable to stateful PCE (active and passive modes) and stateless PCE.</t>
-
-<t>The PCEP protocol has evolved from a simple stateless model into a stateful model with more features being added. Due to subtle differences in interpretation of existing PCEP standards, it was found that networking equipment vendors often had to adjust their implementations, in order to interoperate. This informational document is meant to clarify these subtle differences and agree on a final model that all major vendors have agreed on and that all other vendors can adopt. This document applies to RSVP-TE and Segment-Routing.</t>
+<t>
+Due to different interpretations of PCEP standards, it was found that implementations often had to adjust their behavior in order to interoperate.
+The current document serves to clarify certain aspects of PCEP to make it easier to produce interoperable implementations of PCEP.
+</t>
 
 </section> <!-- Introduction -->
 
@@ -508,13 +518,9 @@ The PCE ASSO DB is now empty.</t>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5440.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8174.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8231.xml"?>
-  <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8281.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8664.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8697.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-pce-segment-routing-ipv6"?>
-</references>
-<references title="Informative References">
-  <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4655.xml"?>
 </references>
   
 <section title="Contributors">
