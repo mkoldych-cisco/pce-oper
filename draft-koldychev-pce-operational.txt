@@ -5,26 +5,24 @@
 PCE Working Group                                           M. Koldychev
 Internet-Draft                                       Cisco Systems, Inc.
 Intended status: Standards Track                            S. Sivabalan
-Expires: August 23, 2022                               Ciena Corporation
+Expires: January 5, 2023                               Ciena Corporation
                                                                  S. Peng
                                                      Huawei Technologies
                                                               D. Achaval
                                                                    Nokia
                                                                 H. Kotni
                                                    Juniper Networks, Inc
-                                                       February 19, 2022
+                                                            July 4, 2022
 
 
                      PCEP Operational Clarification
-                   draft-koldychev-pce-operational-05
+                   draft-koldychev-pce-operational-06
 
 Abstract
 
-   This document proposes some important simplifications to the original
-   PCEP protocol and also serves to clarify certain aspects of PCEP
-   operation.  The content of this document has been compiled based on
-   the feedback from several multi-vendor interop exercises.  Several
-   constructs are introduced, such as the LSP-DB and the ASSO-DB.
+   This document updates, simplifies and clarifies certain aspects of
+   the PCEP protocol.  The content of this document has been compiled
+   based on several interop exercises.
 
 Requirements Language
 
@@ -49,13 +47,15 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 23, 2022.
+   This Internet-Draft will expire on January 5, 2023.
 
 
 
-Koldychev, et al.        Expires August 23, 2022                [Page 1]
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 1]
 
-Internet-Draft             PCEP CLARIFICATION              February 2022
+Internet-Draft             PCEP CLARIFICATION                  July 2022
 
 
 Copyright Notice
@@ -81,13 +81,14 @@ Table of Contents
      3.1.  Structure . . . . . . . . . . . . . . . . . . . . . . . .   4
      3.2.  Synchronization . . . . . . . . . . . . . . . . . . . . .   4
      3.3.  Stateful Bringup  . . . . . . . . . . . . . . . . . . . .   5
-     3.4.  Successful MBB  . . . . . . . . . . . . . . . . . . . . .   7
-     3.5.  Aborted MBB . . . . . . . . . . . . . . . . . . . . . . .   8
-   4.  PCEP Association Database . . . . . . . . . . . . . . . . . .   9
+       3.3.1.  Updates to RFC 8231 . . . . . . . . . . . . . . . . .   5
+     3.4.  Successful MBB  . . . . . . . . . . . . . . . . . . . . .   6
+     3.5.  Aborted MBB . . . . . . . . . . . . . . . . . . . . . . .   7
+   4.  PCEP Association Database . . . . . . . . . . . . . . . . . .   8
      4.1.  2 LSPs in same Association  . . . . . . . . . . . . . . .   9
      4.2.  Switch Association during MBB . . . . . . . . . . . . . .  10
    5.  Computation Constraints . . . . . . . . . . . . . . . . . . .  11
-   6.  Use of RRO, SR-RRO and SRv6-RRO objects . . . . . . . . . . .  12
+   6.  Use of SR-RRO and SRv6-RRO objects  . . . . . . . . . . . . .  11
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
    9.  Acknowledgement . . . . . . . . . . . . . . . . . . . . . . .  12
@@ -98,26 +99,26 @@ Table of Contents
 1.  Introduction
 
    The PCEP protocol started off being purely stateless with PCReq and
-   PCReply messages, as described in Path Computation Element (PCE)
-   Communication Protocol (PCEP) [RFC5440].  Stateless PCEP operates in
-   a "pull" model, i.e., PCC has to periodically ask the PCE for updates
-   to the path, even if the path has not changed.
+   PCReply messages, see Path Computation Element (PCE) Communication
+   Protocol (PCEP) [RFC5440].  Stateless PCEP operates in a "pull"
+   model, i.e., PCC has to periodically ask the PCE for updates to the
+   path, even if the path has not changed.
 
    Stateful PCEP was later introduced in PCEP Extensions for the
    Stateful PCE Model [RFC8231].  Stateful PCEP operates in a "push"
-   model, where the PCC can register with PCE to receive future updates
 
 
 
-Koldychev, et al.        Expires August 23, 2022                [Page 2]
+Koldychev, et al.        Expires January 5, 2023                [Page 2]
 
-Internet-Draft             PCEP CLARIFICATION              February 2022
+Internet-Draft             PCEP CLARIFICATION                  July 2022
 
 
+   model, where the PCC can register with PCE to receive future updates
    about the path, and there is no need to ask the PCE periodically.
    The current document serves to optimize the original procedure in
-   [RFC8231] to drop the PCReq and PCReply exchange, which greatly
-   simplifies implementation and optimizes the protocol.
+   [RFC8231] to optionally drop the PCReq and PCReply exchange, which
+   greatly simplifies implementation and optimizes the protocol.
 
    Due to different interpretations of PCEP standards, it was found that
    implementations often had to adjust their behavior in order to
@@ -160,83 +161,53 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    ERO:  Explicit Route Object is the path of the LSP encoded into a
       PCEP object.  To represent an empty ERO object, i.e., without any
       subobjects, we use the notation "ERO={}".  To represent an ERO
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 3]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
+
       object containing some given sequence of subobjects, we use the
       notation "ERO={A}".
 
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 3]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
 3.  PCEP LSP Database
 
-   We introduce the concept of the LSP-DB, as a database of actual LSP
-   state in the network.  This concept is not explicitly defined in
-   [RFC8231], but is fully compatible with it.  We use the LSP-DB to
-   describe how certain actions are performed, because it is easier to
-   define actions as a function of database state, rather than as a
-   function of previously received messages.  The structure and format
-   of the LSP-DB MUST be common among all dataplane types (i.e., RSVP-
-   TE/SR-TE/SRv6), all instantiation methods (i.e., PCC-initiated/PCE-
-   initiated), all destination types (i.e., point-to-point/point-to-
-   multipoint).
-
-   Note that we use the term "Tunnel" somewhat loosely here, to mean
-   "the object identified by the PLSP-ID".  It may or may not be an
-   actual tunnel in the implementation.  For example, working and
-   protect paths can be implemented as one tunnel interface, but in PCEP
-   we would refer to them as two different Tunnels, because they would
-   have different PLSP-IDs.
+   We use the concept of the LSP-DB, as a database of actual LSP state
+   in the network, to illustrate the internal state of PCEP speakers in
+   response to various PCEP messages.
 
    Note that the term "LSP", which stands for "Label Switched Path", if
    taken too literally would restrict our discussion to MPLS dataplane
-   only.  In this document, we allow the term "LSP" to refer to any
-   path, regardless of the dataplane format.  So that an LSP can refer
-   to MPLS and SRv6 dataplane paths.
+   only.  We take the term "LSP" to apply to non-MPLS paths as well, to
+   avoid changing the name.  Alternatively, we could rename LSP to
+   "Instance".
 
 3.1.  Structure
 
-   [RFC8231] states that the LSP-IDENTIFIERS TLV contains the key that
-   MUST be used to differentiate different LSPs during make before break
-   procedure.  We further clarify here that PCEP LSPs exist in a 2-tier
-   structure.  The top tier is the "Tunnel", identified by the PLSP-ID
-   and/or SYMBOLIC-NAME, while the lower tier is the "LSP", identified
-   by the values in LSP-IDENTIFIERS TLV.  A single Tunnel may contain
-   multiple LSPs at the same time, i.e., a Tunnel is a container for
-   LSPs.  A Tunnel MUST have at least one LSP and when the last LSP is
-   removed from the Tunnel, the Tunnel itself is removed.
+   LSP-DB contains two types of objects: LSPs and Tunnels.  An LSP is
+   identified by the LSP-IDENTIFIERS TLV.  A Tunnel is identified by the
+   PLSP-ID in the LSP object and/or the SYMBOLIC-NAME.  See [RFC8231].
+
+   A Tunnel may or may not be an actual tunnel on the router.  For
+   example, working and protect paths can be implemented as a single
+   tunnel interface, but in PCEP we would refer to them as two different
+   Tunnels, because they would have different PLSP-IDs.
+
+   An LSP can be thought of as a instance of a Tunnel.  In steady-state,
+   a Tunnel has only one LSP, but during make-before-break (see
+   [RFC3209]) it can have multiple LSPs, to represent both new and old
+   instances that exist simultaneously for a time.
 
 3.2.  Synchronization
 
-   The stateful PCE MUST maintain the PCE LSP-DB, which stores Tunnels
-   and LSPs.  The PCE LSP DB is only modified by PCRpt messages.  No
-   other PCEP message may modify the PCE LSP DB.  The PCC MUST also
-   maintain the PCC LSP DB, which it MUST synchronize with the PCE LSP
-   DB by sending PCRpt messages.
-
-   The PCC adds/removes entries to/from its LSP-DB based on what LSPs it
-   creates/destroys in the network.  There can be many trigger types for
-
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 4]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
-   updating the PCC LSP-DB, some examples include PCUpd messages, local
-   computation on the PCC, local configuration on the PCC, etc.  The
-   trigger type does not affect the content of the PCC LSP-DB, i.e., the
-   content of the PCC LSP-DB is updated identically regardless of the
-   trigger type.
-
-   Whenever a PCC modifies an entry in its PCC LSP-DB, it MUST send a
-   PCRpt message to the PCE (or multiple PCEs), to synchronize this
-   change.  Ensuring this synchronization is always in place allows one
-   to define behavior as a function of LSP-DB state, instead of defining
-   behavior as a function of what PCEP messages were sent or received.
+   Both PCE and PCC maintain their separate copies of the LSP-DB.  The
+   PCE LSP-DB is only modified by PCRpt messages, no other PCEP message
+   may modify the PCE LSP-DB.  The PCC LSP-DB is built from actual
+   forwarding state that PCC has installed.  PCC uses PCRpt messages to
+   synchronize its local LSP-DB to the PCE.
 
    The PCE MUST always act on the latest state of the PCE LSP DB.  Note
    that this does not mean that the PCE cannot use information from
@@ -247,57 +218,74 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
    The LSP-DB on both the PCC and the PCE only stores the actual state
    in the network, it does not store the desired state.  For example,
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 4]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
+
    consider the case of PCE Initiated LSP, configured on the PCE.  When
    the operator modifies the configuration of this LSP, that is a change
    in desired state.  The actual state has not yet changed, so LSP-DB is
    not modified yet.  The LSP-DB is only modified after the PCE sends
    PCInit/PCUpd message to the PCC and the PCC decides to act on that
-   message.  When the PCC acts on message, it would update its own PCC
-   LSP DB and immediately send PCRpt to the PCE to synchronize the
+   message.  When the PCC acts on a message from a PCE, it would update
+   its own PCC LSP DB and send a PCRpt to the PCE(s) to synchronize the
    change.  When the PCE receives the PCRpt msg, it updates its own PCE
-   LSP DB.  After this, the PCC LSP DB and PCE LSP DB are in sync.
+   LSP DB.  After this, the PCC LSP-DB and PCE LSP-DB are in sync.
 
 3.3.  Stateful Bringup
 
-   [RFC8231] in section 5.8.2, allows delegation of an LSP in
-   operationally down state, but at the same time mandates the use of
-   PCReq, before sending PCRpt.  In this document, we would like to make
-   it clear that sending PCReq is optional.
+   [RFC8231] Section 5.8.2, allows delegation of an LSP in operationally
+   down state, but at the same time mandates the use of PCReq, before
+   sending PCRpt.  In this document, we would like to make it clear that
+   sending PCReq is optional.
 
    We shall refer to the process of sending PCReq before PCRpt as
    "stateless bringup".  In reality, stateless bringup introduces
    overhead and is not possible to enforce from the PCE, because the
-   stateless PCE is not supposed to keep any per-LSP state about
+   stateless PCE is not required to keep any per-LSP state about
    previous PCReq messages.  It was found that many vendors choose to
    ignore this requirement and send the PCRpt directly, without going
-   through PCReq.  This section will serve to explain and to validate
-   this behavior.
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 5]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
+   through PCReq.  Even though this behavior is against [RFC8231], it
+   offers some advantages and simplifications, as will be explained in
+   this section.  This document therefore updates [RFC8231].
 
    Even though all the major vendors today are moving to the stateful
    PCE model, it does not deprecate the need for stateless PCEP.  The
-   key property of stateless PCEP is that PCReq messages MUST NOT modify
-   the state of the PCE LSP-DB in any way.  Therefore, PCReq messages
-   are useful for many OAM ping/traceroute applications where the PCC
-   wishes to probe the network without having any effect on the existing
+   key property of stateless PCEP is that PCReq messages do not modify
+   the state of the PCE LSP-DB.  Therefore, PCReq messages are useful
+   for many OAM ping/traceroute applications where the PCC wishes to
+   probe the network topology without having any effect on the existing
    LSPs.
 
-   The PCC MAY delegate an empty LSP to the PCE and then wait for the
-   PCE to send PCUpd, without sending PCReq.  We shall refer to this
-   process as "stateful bringup".  The PCE MUST support the original
-   stateless bringup, for backward compatibility purposes.  Supporting
-   stateful bringup should not require introducing any new behavior on
-   the PCE, because as mentioned earlier, the PCE MUST NOT modify LSP-DB
-   state based on PCReq messages.  So whether the PCE has received a
-   PCReq or not, it MUST process the PCRpt all the same.
+3.3.1.  Updates to RFC 8231
+
+   [RFC8231] Section 5.8.2, says "The only explicit way for a PCC to
+   request a path from the PCE is to send a PCReq message.  The PCRpt
+   message MUST NOT be used by the PCC to attempt to request a path from
+   the PCE."  In this document we update [RFC8231] to remove the quoted
+   text.
+
+   As part of the new bringup procedure, the PCC MAY delegate an empty
+   LSP (no ERO or empty ERO) to the PCE and then wait for the PCE to
+   send PCUpd, without sending PCReq.  We shall refer to this process as
+   "stateful bringup".  The PCE MUST support the original stateless
+   bringup, for backward compatibility purposes.  Supporting stateful
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 5]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
+
+   bringup should not require introducing any new behavior on the PCE,
+   because as mentioned earlier, the PCE does not modify LSP-DB state
+   based on PCReq messages.  So whether the PCE has received a PCReq or
+   not, it would process the PCRpt all the same.
 
    An example of stateful bringup follows.  In our example the PCC
    starts off by using LSP-ID of 0.  The value 0 does not hold any
@@ -327,17 +315,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
                         Figure 2: Content of LSP DB
 
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 6]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
 3.4.  Successful MBB
 
    Below we give an example of doing MBB to switch the Tunnel from one
@@ -346,6 +323,20 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
    PCC has an existing LSP in UP state, with LSP-ID=2.  PCC sends
    PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=2, ERO={A}, OPER-FLAG=UP).
+
+
+
+
+
+
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 6]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
@@ -381,19 +372,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    cleans up the old LSP.  PCC sends PCRpt(R-FLAG=1, PLSP-ID=100, LSP-
    ID=2).
 
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 7]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
      +---------------------------------------------------------------+
      | TUNNEL          | LSP                                         |
      +-----------------+---------------------------------------------+
@@ -407,6 +385,14 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    The MBB process can abort when the newly created LSP is destroyed
    before it is installed as traffic carrying.  This scenario is
    described below.
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 7]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
    PCC has an existing LSP in UP state, with LSP-ID=2.  PCC sends
    PCRpt(R-FLAG=0, OPER-FLAG=UP, PLSP-ID=100, LSP-ID=2).
@@ -443,27 +429,31 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
                         Figure 8: Content of LSP DB
 
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 8]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
 4.  PCEP Association Database
 
    PCEP Association is a group of zero or more LSPs.
 
-   The PCE ASSO DB is populated by PCRpt messages and MAY also be
-   populated via configuration on the PCE itself.  An Association is
-   identified by the Association Parameters.  The Association parameters
-   contain many fields, so for convenience we will group all the fields
-   into a single value.  We will use ASSO_PARAM=A, ASSO_PARAM=B, to
-   refer to different PCEP Associations: A and B, respectively.
+   The PCE ASSO DB is populated by PCRpt messages and/or via
+   configuration on the PCE itself.  An Association is identified by the
+   Association Parameters.  The Association parameters contain many
+   fields, so for convenience we will group all the fields into a single
+   value.  We will use ASSO_PARAM=A, ASSO_PARAM=B, to refer to different
+   PCEP Associations: A and B, respectively.
+
+
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 8]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
 4.1.  2 LSPs in same Association
 
-   Below, we give an example of LSPs joining the same Association.
+   Below, we give an example to illustrate how LSPs join the same
+   Association.
 
    PCC creates the first LSP.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=100,
    LSP-ID=1, ASSO_PARAM=A, ASSO_R_FLAG=0).
@@ -491,20 +481,11 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    PCC updates the first LSP, the PCC is NOT REQUIRED to send the
    ASSOCIATION object in this PCRpt, since the LSP is already in the
    Association.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1).  The
-   content of the PCE ASSO DB is unchanged.  Note that the PCC MUST send
-   the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if
-   it has already issued a PCRpt with the association object sometime in
+   content of the PCE ASSO DB is unchanged.  Note that the PCC sends the
+   ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if it
+   has already issued a PCRpt with the association object sometime in
    the past with this PCE.  The synchronization steps outlined in
    [RFC8697] are to be followed.
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022                [Page 9]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
 
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
@@ -517,6 +498,13 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
    PCC decides to delete the second LSP.  PCC sends PCRpt(R-FLAG=1,
    PLSP-ID=200, LSP-ID=1).
+
+
+
+Koldychev, et al.        Expires January 5, 2023                [Page 9]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
@@ -540,27 +528,17 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
 4.2.  Switch Association during MBB
 
+   Below, we give an example to illustrate how a Tunnel goes through MBB
+   and switches from Association A to Association B.
+
    Each new LSP (identified by the LSP-ID) does not inherit the
    Association membership of any previous LSPs within the same Tunnel.
-   This is done so that a Tunnel can have two LSPs that are in different
-   Associations, this may be required when switching from one
-   Association to another.
-
-   Below, we give an example a Tunnel going through MBB and switching
-   from Association A to Association B.
+   This is so that a Tunnel can have two LSPs that are in different
+   Associations, this may be done when switching from one Association to
+   another.
 
    PCC creates the first LSP.  PCC sends PCRpt(R-FLAG=0, PLSP-ID=100,
    LSP-ID=1, ASSO_PARAM=A, ASSO_R_FLAG=0).
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 10]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
 
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
@@ -572,6 +550,17 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
    PCC creates the MBB LSP in a different Association.  PCC sends
    PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=2, ASSO_PARAM=B, ASSO_R_FLAG=0).
+
+
+
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023               [Page 10]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
      +---------------------------------------------------------------+
      | ASSO            | LSP                                         |
@@ -607,43 +596,40 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    it is possible to remove a constraint without using an explicit
    removal flag.
 
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 11]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
-6.  Use of RRO, SR-RRO and SRv6-RRO objects
+6.  Use of SR-RRO and SRv6-RRO objects
 
    [RFC8231] defines a PCRpt message which contains <intended-path>
    known as the ERO object and <actual-path> known as the RRO object.
-   [RFC8664] defines SR-ERO and SR-RRO objects for SR-TE LSPs.
+   [RFC8664] defines SR-ERO and SR-RRO sub-objects for SR-TE LSPs.
    [I-D.ietf-pce-segment-routing-ipv6] further defines SRv6-ERO and
-   SRv6-RRO objects for SRv6-TE paths.
+   SRv6-RRO sub-objects for SRv6-TE paths.
 
-   In practice RRO data set is the result of signalling of the intended
-   path defined in the ERO via protocol such as RSVP.  The ERO and RRO
-   values may be different as the path encoded in the ERO may differ
-   than the RRO such as during protection conditions or if the ERO
-   contains loose hops which are expanded upon.  As Segment Routing LSP
-   does not perform any signalling, the values of an SR-ERO/SRv6-ERO and
-   SR-RRO/SRv6-RRO (respectively) are in practice the same, therefore
-   some implementations have omitted the SR-RRO/SRv6-RRO when reporting
-   a SR-TE LSP while others continue to send both SR-ERO/SRv6-ERO and
-   SR-RRO/SRv6-RRO values.
+   In practice RRO data is the result of signalling via a protocol such
+   as RSVP-TE, which allows collection of per-hop information along the
+   path.  The ERO and RRO values may be different as the path encoded in
+   the ERO may differ than the RRO such as during protection conditions
+   or if the ERO contains loose hops which are expanded upon.  As
+   Segment Routing LSP does not perform any signalling, the values of an
 
-   A PCC MUST send an (possibly empty) ERO/SR-ERO/SRv6-ERO in the PCRpt
-   message for every LSP.  A PCC MAY send an SR-RRO/SRv6-RRO for an SR-
-   TE/SRv6-TE LSP (respectively).  A PCE SHOULD interpret the RRO/SR-
-   RRO/SRv6-RRO as the actual path the LSP is taking but MAY interpret
-   only the ERO/SR-ERO/SRv6-ERO as the actual path.  In the absence of
-   an RRO/SR-RRO/SRv6-RRO a PCE SHOULD interpret the ERO/SR-ERO/SRv6-ERO
-   (respectively) as the actual path for the LSP.
+
+
+Koldychev, et al.        Expires January 5, 2023               [Page 11]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
+
+   SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO (respectively) are in practice
+   the same, therefore some implementations have omitted the RRO when
+   reporting a SR-TE LSP while others continue to send both ERO and RRO
+   values.
+
+   The following applies to SR-TE only.  If both ERO and RRO are present
+   for the same LSP, it SHOULD be interpreted as the RRO being the
+   actual path the LSP is taking but MAY interpret only the ERO as the
+   actual path.  In the absence of RRO a PCE MUST interpret the ERO as
+   the actual path for the LSP.  Until SR-TE introduces some form of
+   signaling similar to RSVP-TE, the use of RRO is discouraged for SR-TE
+   LSPs.
 
 7.  Security Considerations
 
@@ -654,6 +640,9 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
    None at this time.
 
 9.  Acknowledgement
+
+   The authors would like to thank Adrian Farrel for useful review
+   comments.
 
 10.  Normative References
 
@@ -667,13 +656,6 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
               DOI 10.17487/RFC5440, March 2009,
               <https://www.rfc-editor.org/info/rfc5440>.
 
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 12]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
@@ -683,6 +665,14 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
               Extensions for Stateful PCE", RFC 8231,
               DOI 10.17487/RFC8231, September 2017,
               <https://www.rfc-editor.org/info/rfc8231>.
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023               [Page 12]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
    [RFC8664]  Sivabalan, S., Filsfils, C., Tantsura, J., Henderickx, W.,
               and J. Hardwick, "Path Computation Element Communication
@@ -697,11 +687,16 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
               (LSPs)", RFC 8697, DOI 10.17487/RFC8697, January 2020,
               <https://www.rfc-editor.org/info/rfc8697>.
 
+   [RFC3209]  Awduche, D., Berger, L., Gan, D., Li, T., Srinivasan, V.,
+              and G. Swallow, "RSVP-TE: Extensions to RSVP for LSP
+              Tunnels", RFC 3209, DOI 10.17487/RFC3209, December 2001,
+              <https://www.rfc-editor.org/info/rfc3209>.
+
    [I-D.ietf-pce-segment-routing-ipv6]
               Li, C., Negi, M., Sivabalan, S., Koldychev, M.,
               Kaladharan, P., and Y. Zhu, "PCEP Extensions for Segment
               Routing leveraging the IPv6 data plane", draft-ietf-pce-
-              segment-routing-ipv6-11 (work in progress), January 2022.
+              segment-routing-ipv6-13 (work in progress), April 2022.
 
 Appendix A.  Contributors
 
@@ -719,22 +714,21 @@ Appendix A.  Contributors
 
    Email: andrew.stone@nokia.com
 
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 13]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
    Samuel Sidor
    Cisco Systems
    Bratislava, Slovakia
 
    Email: ssidor@cisco.com
+
+
+
+
+
+
+Koldychev, et al.        Expires January 5, 2023               [Page 13]
+
+Internet-Draft             PCEP CLARIFICATION                  July 2022
+
 
    Mahendra Singh Negi
    RtBrick Inc
@@ -779,13 +773,6 @@ Authors' Addresses
    Email: diego.achaval@nokia.com
 
 
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 14]
-
-Internet-Draft             PCEP CLARIFICATION              February 2022
-
-
    Hari Kotni
    Juniper Networks, Inc
 
@@ -794,47 +781,4 @@ Internet-Draft             PCEP CLARIFICATION              February 2022
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Koldychev, et al.        Expires August 23, 2022               [Page 15]
+Koldychev, et al.        Expires January 5, 2023               [Page 14]

@@ -36,7 +36,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-koldychev-pce-operational-05" ipr="trust200902">
+<rfc category="std" docName="draft-koldychev-pce-operational-06" ipr="trust200902">
 <!-- category values: std, bcp, info, exp, and historic
 ipr values: full3667, noModification3667, noDerivatives3667
 you can add the attributes updates="NNNN" and obsoletes="NNNN" 
@@ -103,15 +103,14 @@ they will automatically be output with "(if approved)" -->
       </address>
     </author>
 
-    <date month="February" year="2022" />
+    <date month="July" year="2022" />
 
     <workgroup>PCE Working Group</workgroup>
 
 <abstract>
 <t>
-This document proposes some important simplifications to the original PCEP protocol and also serves to clarify certain aspects of PCEP operation.
-The content of this document has been compiled based on the feedback from several multi-vendor interop exercises.
-Several constructs are introduced, such as the LSP-DB and the ASSO-DB.
+This document updates, simplifies and clarifies certain aspects of the PCEP protocol.
+The content of this document has been compiled based on several interop exercises.
 </t>
 </abstract> 
 
@@ -129,14 +128,14 @@ appear in all capitals, as shown here.</t>
 <section anchor="Introduction" title="Introduction">
 
 <t>
-The PCEP protocol started off being purely stateless with PCReq and PCReply messages, as described in Path Computation Element (PCE) Communication Protocol (PCEP) <xref target="RFC5440"/>.
+The PCEP protocol started off being purely stateless with PCReq and PCReply messages, see Path Computation Element (PCE) Communication Protocol (PCEP) <xref target="RFC5440"/>.
 Stateless PCEP operates in a "pull" model, i.e., PCC has to periodically ask the PCE for updates to the path, even if the path has not changed.
 </t>
 
 <t>
 Stateful PCEP was later introduced in PCEP Extensions for the Stateful PCE Model <xref target="RFC8231"/>.
 Stateful PCEP operates in a "push" model, where the PCC can register with PCE to receive future updates about the path, and there is no need to ask the PCE periodically.
-The current document serves to optimize the original procedure in <xref target="RFC8231"/> to drop the PCReq and PCReply exchange, which greatly simplifies implementation and optimizes the protocol.
+The current document serves to optimize the original procedure in <xref target="RFC8231"/> to optionally drop the PCReq and PCReply exchange, which greatly simplifies implementation and optimizes the protocol.
 </t>
 
 <t>
@@ -173,40 +172,42 @@ The current document serves to clarify certain aspects of PCEP to make it easier
 
 <section anchor="LSP_DB" title="PCEP LSP Database">
 
-<t>We introduce the concept of the LSP-DB, as a database of actual LSP state in the network. This concept is not explicitly defined in <xref target="RFC8231"/>, but is fully compatible with it. We use the LSP-DB to describe how certain actions are performed, because it is easier to define actions as a function of database state, rather than as a function of previously received messages. The structure and format of the LSP-DB MUST be common among all dataplane types (i.e., RSVP-TE/SR-TE/SRv6), all instantiation methods (i.e., PCC-initiated/PCE-initiated), all destination types (i.e., point-to-point/point-to-multipoint).</t>
+<t>We use the concept of the LSP-DB, as a database of actual LSP state in the network, to illustrate the internal state of PCEP speakers in response to various PCEP messages.</t>
 
-<t>Note that we use the term "Tunnel" somewhat loosely here, to mean "the object identified by the PLSP-ID". It may or may not be an actual tunnel in the implementation. For example, working and protect paths can be implemented as one tunnel interface, but in PCEP we would refer to them as two different Tunnels, because they would have different PLSP-IDs.</t>
-
-<t>Note that the term "LSP", which stands for "Label Switched Path", if taken too literally would restrict our discussion to MPLS dataplane only. In this document, we allow the term "LSP" to refer to any path, regardless of the dataplane format. So that an LSP can refer to MPLS and SRv6 dataplane paths.</t>
+<t>Note that the term "LSP", which stands for "Label Switched Path", if taken too literally would restrict our discussion to MPLS dataplane only. We take the term "LSP" to apply to non-MPLS paths as well, to avoid changing the name. Alternatively, we could rename LSP to "Instance".</t>
 
 <section anchor="LSP_DB_STRUCTURE" title="Structure">
 
-<t><xref target="RFC8231"/> states that the LSP-IDENTIFIERS TLV contains the key that MUST be used to differentiate different LSPs during make before break procedure. We further clarify here that PCEP LSPs exist in a 2-tier structure. The top tier is the "Tunnel", identified by the PLSP-ID and/or SYMBOLIC-NAME, while the lower tier is the "LSP", identified by the values in LSP-IDENTIFIERS TLV. A single Tunnel may contain multiple LSPs at the same time, i.e., a Tunnel is a container for LSPs. A Tunnel MUST have at least one LSP and when the last LSP is removed from the Tunnel, the Tunnel itself is removed.</t>
+<t>LSP-DB contains two types of objects: LSPs and Tunnels. An LSP is identified by the LSP-IDENTIFIERS TLV. A Tunnel is identified by the PLSP-ID in the LSP object and/or the SYMBOLIC-NAME. See <xref target="RFC8231"/>.</t>
+
+<t>A Tunnel may or may not be an actual tunnel on the router. For example, working and protect paths can be implemented as a single tunnel interface, but in PCEP we would refer to them as two different Tunnels, because they would have different PLSP-IDs.</t>
+
+<t>An LSP can be thought of as a instance of a Tunnel. In steady-state, a Tunnel has only one LSP, but during make-before-break (see <xref target="RFC3209"/>) it can have multiple LSPs, to represent both new and old instances that exist simultaneously for a time.</t>
 
 </section> <!-- LSP_DB_STRUCTURE -->
 
 
 <section anchor="LSP_DB_SYNC" title="Synchronization">
 
-<t>The stateful PCE MUST maintain the PCE LSP-DB, which stores Tunnels and LSPs. The PCE LSP DB is only modified by PCRpt messages. No other PCEP message may modify the PCE LSP DB. The PCC MUST also maintain the PCC LSP DB, which it MUST synchronize with the PCE LSP DB by sending PCRpt messages.</t>
-
-<t>The PCC adds/removes entries to/from its LSP-DB based on what LSPs it creates/destroys in the network. There can be many trigger types for updating the PCC LSP-DB, some examples include PCUpd messages, local computation on the PCC, local configuration on the PCC, etc. The trigger type does not affect the content of the PCC LSP-DB, i.e., the content of the PCC LSP-DB is updated identically regardless of the trigger type.</t>
-
-<t>Whenever a PCC modifies an entry in its PCC LSP-DB, it MUST send a PCRpt message to the PCE (or multiple PCEs), to synchronize this change. Ensuring this synchronization is always in place allows one to define behavior as a function of LSP-DB state, instead of defining behavior as a function of what PCEP messages were sent or received.</t>
+<t>Both PCE and PCC maintain their separate copies of the LSP-DB. The PCE LSP-DB is only modified by PCRpt messages, no other PCEP message may modify the PCE LSP-DB. The PCC LSP-DB is built from actual forwarding state that PCC has installed. PCC uses PCRpt messages to synchronize its local LSP-DB to the PCE.</t>
 
 <t>The PCE MUST always act on the latest state of the PCE LSP DB. Note that this does not mean that the PCE cannot use information from outside of LSP-DB. For example, the PCE can use other mechanisms to collect traffic statistics and use them in the computation. However, these traffic statistics are not part of the LSP-DB, but only reference it.</t>
 
-<t>The LSP-DB on both the PCC and the PCE only stores the actual state in the network, it does not store the desired state. For example, consider the case of PCE Initiated LSP, configured on the PCE. When the operator modifies the configuration of this LSP, that is a change in desired state. The actual state has not yet changed, so LSP-DB is not modified yet. The LSP-DB is only modified after the PCE sends PCInit/PCUpd message to the PCC and the PCC decides to act on that message. When the PCC acts on message, it would update its own PCC LSP DB and immediately send PCRpt to the PCE to synchronize the change. When the PCE receives the PCRpt msg, it updates its own PCE LSP DB. After this, the PCC LSP DB and PCE LSP DB are in sync.</t>
+<t>The LSP-DB on both the PCC and the PCE only stores the actual state in the network, it does not store the desired state. For example, consider the case of PCE Initiated LSP, configured on the PCE. When the operator modifies the configuration of this LSP, that is a change in desired state. The actual state has not yet changed, so LSP-DB is not modified yet. The LSP-DB is only modified after the PCE sends PCInit/PCUpd message to the PCC and the PCC decides to act on that message. When the PCC acts on a message from a PCE, it would update its own PCC LSP DB and send a PCRpt to the PCE(s) to synchronize the change. When the PCE receives the PCRpt msg, it updates its own PCE LSP DB. After this, the PCC LSP-DB and PCE LSP-DB are in sync.</t>
 
 </section> <!-- LSP_DB_SYNC -->
 
 
 <section anchor="LSP_DB_EMPTY" title="Stateful Bringup">
 
-<t><xref target="RFC8231"/> in section 5.8.2, allows delegation of an LSP in operationally down state, but at the same time mandates the use of PCReq, before sending PCRpt. In this document, we would like to make it clear that sending PCReq is optional.</t>
-<t>We shall refer to the process of sending PCReq before PCRpt as "stateless bringup". In reality, stateless bringup introduces overhead and is not possible to enforce from the PCE, because the stateless PCE is not supposed to keep any per-LSP state about previous PCReq messages. It was found that many vendors choose to ignore this requirement and send the PCRpt directly, without going through PCReq. This section will serve to explain and to validate this behavior.</t>
-<t>Even though all the major vendors today are moving to the stateful PCE model, it does not deprecate the need for stateless PCEP. The key property of stateless PCEP is that PCReq messages MUST NOT modify the state of the PCE LSP-DB in any way. Therefore, PCReq messages are useful for many OAM ping/traceroute applications where the PCC wishes to probe the network without having any effect on the existing LSPs.</t>
-<t>The PCC MAY delegate an empty LSP to the PCE and then wait for the PCE to send PCUpd, without sending PCReq. We shall refer to this process as "stateful bringup". The PCE MUST support the original stateless bringup, for backward compatibility purposes. Supporting stateful bringup should not require introducing any new behavior on the PCE, because as mentioned earlier, the PCE MUST NOT modify LSP-DB state based on PCReq messages. So whether the PCE has received a PCReq or not, it MUST process the PCRpt all the same.</t>
+<t><xref target="RFC8231"/> Section 5.8.2, allows delegation of an LSP in operationally down state, but at the same time mandates the use of PCReq, before sending PCRpt. In this document, we would like to make it clear that sending PCReq is optional.</t>
+<t>We shall refer to the process of sending PCReq before PCRpt as "stateless bringup". In reality, stateless bringup introduces overhead and is not possible to enforce from the PCE, because the stateless PCE is not required to keep any per-LSP state about previous PCReq messages. It was found that many vendors choose to ignore this requirement and send the PCRpt directly, without going through PCReq. Even though this behavior is against <xref target="RFC8231"/>, it offers some advantages and simplifications, as will be explained in this section. This document therefore updates <xref target="RFC8231"/>. </t>
+<t>Even though all the major vendors today are moving to the stateful PCE model, it does not deprecate the need for stateless PCEP. The key property of stateless PCEP is that PCReq messages do not modify the state of the PCE LSP-DB. Therefore, PCReq messages are useful for many OAM ping/traceroute applications where the PCC wishes to probe the network topology without having any effect on the existing LSPs.</t>
+
+<section anchor="LSP_DB_EMPTY_UPDATE" title="Updates to RFC 8231">
+
+<t><xref target="RFC8231"/> Section 5.8.2, says "The only explicit way for a PCC to request a path from the PCE is to send a PCReq message.  The PCRpt message MUST NOT be used by the PCC to attempt to request a path from the PCE." In this document we update <xref target="RFC8231"/> to remove the quoted text.</t>
+<t>As part of the new bringup procedure, the PCC MAY delegate an empty LSP (no ERO or empty ERO) to the PCE and then wait for the PCE to send PCUpd, without sending PCReq. We shall refer to this process as "stateful bringup". The PCE MUST support the original stateless bringup, for backward compatibility purposes. Supporting stateful bringup should not require introducing any new behavior on the PCE, because as mentioned earlier, the PCE does not modify LSP-DB state based on PCReq messages. So whether the PCE has received a PCReq or not, it would process the PCRpt all the same.</t>
 <t>An example of stateful bringup follows. In our example the PCC starts off by using LSP-ID of 0. The value 0 does not hold any special meaning, any other 16-bit value could have been used.</t>
 
 <t>PCC has no LSP yet, but wants to establish a path. PCC sends PCRpt(R-FLAG=0, D-flag=1, OPER-FLAG=DOWN, PLSP-ID=100, LSP-ID=0, ERO={}).</t>
@@ -234,6 +235,8 @@ The current document serves to clarify certain aspects of PCEP to make it easier
 ]]></artwork>
 </figure>
 </t>
+
+</section> <!-- LSP_DB_EMPTY_UPDATE -->
 
 </section> <!-- LSP_DB_EMPTY -->
 
@@ -341,11 +344,11 @@ The current document serves to clarify certain aspects of PCEP to make it easier
 
 <t>PCEP Association is a group of zero or more LSPs.</t>
 
-<t>The PCE ASSO DB is populated by PCRpt messages and MAY also be populated via configuration on the PCE itself. An Association is identified by the Association Parameters. The Association parameters contain many fields, so for convenience we will group all the fields into a single value. We will use ASSO_PARAM=A, ASSO_PARAM=B, to refer to different PCEP Associations: A and B, respectively.</t>
+<t>The PCE ASSO DB is populated by PCRpt messages and/or via configuration on the PCE itself. An Association is identified by the Association Parameters. The Association parameters contain many fields, so for convenience we will group all the fields into a single value. We will use ASSO_PARAM=A, ASSO_PARAM=B, to refer to different PCEP Associations: A and B, respectively.</t>
 
 <section anchor="ASSO_DB_2LSP_1ASSO" title="2 LSPs in same Association">
 
-<t>Below, we give an example of LSPs joining the same Association.</t>
+<t>Below, we give an example to illustrate how LSPs join the same Association.</t>
 
 <t>PCC creates the first LSP. PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1, ASSO_PARAM=A, ASSO_R_FLAG=0).</t>
 <t>
@@ -376,7 +379,7 @@ The current document serves to clarify certain aspects of PCEP to make it easier
 
 <t>PCC updates the first LSP, the PCC is NOT REQUIRED to send the ASSOCIATION object in this PCRpt, 
 since the LSP is already in the Association. PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1). The 
-content of the PCE ASSO DB is unchanged. Note that the PCC MUST send the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if it has already issued a PCRpt with the association object sometime in the past with this PCE. The synchronization steps outlined in <xref target="RFC8697"/> are to be followed.</t>
+content of the PCE ASSO DB is unchanged. Note that the PCC sends the ASSOCIATION OBJECT in the first PCRpt during SYNC state, even if it has already issued a PCRpt with the association object sometime in the past with this PCE. The synchronization steps outlined in <xref target="RFC8697"/> are to be followed.</t>
 <t>
 <figure anchor="ASSO_DB_2TUN_1ASSO_CONTENT_3" title="Content of PCE ASSO DB">
 <artwork align="left"><![CDATA[
@@ -423,11 +426,12 @@ The PCE ASSO DB is now empty.</t>
 
 <section anchor="ASSO_DB_SWITCH_ASSO" title="Switch Association during MBB">
 
-<t>Each new LSP (identified by the LSP-ID) does not inherit the Association membership of any previous LSPs within the same Tunnel. This is done so that a Tunnel can have two LSPs that are in different Associations, this may be required when switching from one Association to another.</t>
+<t>Below, we give an example to illustrate how a Tunnel goes through MBB and switches from Association A to Association B.</t>
 
-<t>Below, we give an example a Tunnel going through MBB and switching from Association A to Association B.</t>
+<t>Each new LSP (identified by the LSP-ID) does not inherit the Association membership of any previous LSPs within the same Tunnel. This is so that a Tunnel can have two LSPs that are in different Associations, this may be done when switching from one Association to another.</t>
 
 <t>PCC creates the first LSP. PCC sends PCRpt(R-FLAG=0, PLSP-ID=100, LSP-ID=1, ASSO_PARAM=A, ASSO_R_FLAG=0).</t>
+
 <t>
 <figure anchor="ASSO_DB_SWITCH_ASSO_CONTENT_1" title="Content of PCE ASSO DB">
 <artwork align="left"><![CDATA[
@@ -481,13 +485,13 @@ The PCE ASSO DB is now empty.</t>
 </section> <!-- COMP_CONST  -->
 
 
-<section anchor="RRO" title="Use of RRO, SR-RRO and SRv6-RRO objects">
+<section anchor="RRO" title="Use of SR-RRO and SRv6-RRO objects">
 
-<t><xref target="RFC8231"/> defines a PCRpt message which contains &#60;intended-path&#62; known as the ERO object and &#60;actual-path&#62; known as the RRO object. <xref target="RFC8664"/> defines SR-ERO and SR-RRO objects for SR-TE LSPs. <xref target="I-D.ietf-pce-segment-routing-ipv6"/> further defines SRv6-ERO and SRv6-RRO objects for SRv6-TE paths.</t>
+<t><xref target="RFC8231"/> defines a PCRpt message which contains &#60;intended-path&#62; known as the ERO object and &#60;actual-path&#62; known as the RRO object. <xref target="RFC8664"/> defines SR-ERO and SR-RRO sub-objects for SR-TE LSPs. <xref target="I-D.ietf-pce-segment-routing-ipv6"/> further defines SRv6-ERO and SRv6-RRO sub-objects for SRv6-TE paths.</t>
 
-<t>In practice RRO data set is the result of signalling of the intended path defined in the ERO via protocol such as RSVP. The ERO and RRO values may be different as the path encoded in the ERO may differ than the RRO such as during protection conditions or if the ERO contains loose hops which are expanded upon. As Segment Routing LSP does not perform any signalling, the values of an SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO (respectively) are in practice the same, therefore some implementations have omitted the SR-RRO/SRv6-RRO when reporting a SR-TE LSP while others continue to send both SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO values.</t>
+<t>In practice RRO data is the result of signalling via a protocol such as RSVP-TE, which allows collection of per-hop information along the path. The ERO and RRO values may be different as the path encoded in the ERO may differ than the RRO such as during protection conditions or if the ERO contains loose hops which are expanded upon. As Segment Routing LSP does not perform any signalling, the values of an SR-ERO/SRv6-ERO and SR-RRO/SRv6-RRO (respectively) are in practice the same, therefore some implementations have omitted the RRO when reporting a SR-TE LSP while others continue to send both ERO and RRO values.</t>
  
-<t>A PCC MUST send an (possibly empty) ERO/SR-ERO/SRv6-ERO in the PCRpt message for every LSP. A PCC MAY send an SR-RRO/SRv6-RRO for an SR-TE/SRv6-TE LSP (respectively). A PCE SHOULD interpret the RRO/SR-RRO/SRv6-RRO as the actual path the LSP is taking but MAY interpret only the ERO/SR-ERO/SRv6-ERO as the actual path. In the absence of an RRO/SR-RRO/SRv6-RRO a PCE SHOULD interpret the ERO/SR-ERO/SRv6-ERO (respectively) as the actual path for the LSP.</t>
+<t>The following applies to SR-TE only. If both ERO and RRO are present for the same LSP, it SHOULD be interpreted as the RRO being the actual path the LSP is taking but MAY interpret only the ERO as the actual path. In the absence of RRO a PCE MUST interpret the ERO as the actual path for the LSP. Until SR-TE introduces some form of signaling similar to RSVP-TE, the use of RRO is discouraged for SR-TE LSPs.</t>
 
 </section> <!-- RRO -->
 
@@ -507,6 +511,9 @@ The PCE ASSO DB is now empty.</t>
 
 
 <section anchor="Acknowledgement" title="Acknowledgement">
+
+<t>The authors would like to thank Adrian Farrel for useful review comments.</t>
+
 </section> <!-- Acknowledgement -->
 
 </middle>
@@ -520,6 +527,7 @@ The PCE ASSO DB is now empty.</t>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8231.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8664.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.8697.xml"?>
+  <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.3209.xml"?>
   <?rfc include="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-pce-segment-routing-ipv6"?>
 </references>
   
